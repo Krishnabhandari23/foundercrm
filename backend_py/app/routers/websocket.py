@@ -68,6 +68,28 @@ async def websocket_endpoint(
                         "timestamp": datetime.now().timestamp()
                     }, user.workspace_id, exclude_user=user.id)
                     
+                elif message.type == WebSocketMessageType.DASHBOARD_STATE:
+                    # Store dashboard state
+                    await manager.update_dashboard_state(user.id, user.workspace_id, message.payload)
+                    
+                elif message.type == WebSocketMessageType.DASHBOARD_SYNC:
+                    # Sync dashboard between users
+                    target_user_id = message.payload.get("target_user_id")
+                    if target_user_id:
+                        state = await manager.get_dashboard_state(user.id, user.workspace_id)
+                        if state:
+                            await manager.broadcast_to_users({
+                                "type": WebSocketMessageType.DASHBOARD_STATE,
+                                "payload": {
+                                    "source_user_id": user.id,
+                                    "dashboard_type": state.get("dashboard_type"),
+                                    "filters": state.get("filters", {}),
+                                    "data": state.get("data", {}),
+                                    "timestamp": datetime.now().timestamp()
+                                },
+                                "workspace_id": user.workspace_id
+                            }, user.workspace_id, [target_user_id])
+                    
         except WebSocketDisconnect:
             # Handle disconnection
             await manager.disconnect(websocket, user.workspace_id, user.id)

@@ -9,6 +9,9 @@ export const WS_MESSAGE_TYPES = {
   TASK_UPDATE: 'task_update',
   TASK_STATUS_CHANGE: 'task_status_change',
   DASHBOARD_SYNC: 'dashboard_sync',
+  DASHBOARD_STATE: 'dashboard_state',
+  DASHBOARD_UPDATE: 'dashboard_update',
+  DASHBOARD_FILTER: 'dashboard_filter',
   STATE_UPDATE: 'state_update',
   NOTIFICATION: 'notification',
   BEAUTIFIED_STATUS: 'beautified_status'
@@ -41,8 +44,29 @@ const handleTaskUpdate = (payload) => {
 };
 
 const handleDashboardSync = (payload) => {
-  // Update dashboard data
-  window.dispatchEvent(new CustomEvent('dashboardSync', { detail: payload }));
+  const { source_user_id, dashboard_type, filters, data } = payload;
+  // Update dashboard data with synced state
+  window.dispatchEvent(new CustomEvent('dashboardSync', {
+    detail: {
+      sourceUserId: source_user_id,
+      dashboardType: dashboard_type,
+      filters,
+      data
+    }
+  }));
+};
+
+const handleDashboardState = (payload) => {
+  const { source_user_id, dashboard_type, filters, data } = payload;
+  // Update dashboard state from another user
+  window.dispatchEvent(new CustomEvent('dashboardState', {
+    detail: {
+      sourceUserId: source_user_id,
+      dashboardType: dashboard_type,
+      filters,
+      data
+    }
+  }));
 };
 
 const handleStateUpdate = (payload) => {
@@ -73,6 +97,9 @@ export const useWebSocket = () => {
         break;
       case 'dashboard_sync':
         handleDashboardSync(message.payload);
+        break;
+      case 'dashboard_state':
+        handleDashboardState(message.payload);
         break;
       case 'user_presence':
         handleUserPresence(message.payload);

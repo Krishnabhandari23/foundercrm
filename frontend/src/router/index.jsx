@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import MainLayout from '../components/layout/MainLayout';
 import { ProtectedRoute } from '../components/auth/ProtectedRoute';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
 import LoginPage from '../pages/LoginPage';
@@ -32,7 +33,9 @@ export const router = createBrowserRouter([
     path: '/dashboard',
     element: (
       <ProtectedRoute>
-        <DashboardPage />
+        <MainLayout>
+          <DashboardPage />
+        </MainLayout>
       </ProtectedRoute>
     ),
   },

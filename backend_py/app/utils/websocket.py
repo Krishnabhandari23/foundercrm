@@ -16,6 +16,10 @@ class ConnectionManager:
         self.active_connections: Dict[str, Dict[str, Set[WebSocket]]] = defaultdict(lambda: defaultdict(set))
         # user_id -> last_seen timestamp
         self.user_presence: Dict[str, float] = {}
+        # workspace_id -> {user_id -> dashboard_state}
+        self.dashboard_states: Dict[str, Dict[str, dict]] = defaultdict(dict)
+        # For keeping track of synced dashboards
+        self.synced_pairs: Dict[str, Set[tuple]] = defaultdict(set)
         
     async def connect(self, websocket: WebSocket, workspace_id: str, user_id: str):
         """Connect a user to a workspace."""
@@ -85,6 +89,28 @@ class ConnectionManager:
         if workspace_id not in self.active_connections:
             return []
         return list(self.active_connections[workspace_id].keys())
+        
+    async def update_dashboard_state(self, user_id: str, workspace_id: str, state: dict):
+        """Update dashboard state for a user."""
+        self.dashboard_states[workspace_id][user_id] = {
+            "dashboard_type": state.get("dashboard_type"),
+            "filters": state.get("filters", {}),
+            "data": state.get("data", {}),
+            "timestamp": datetime.now().timestamp()
+        }
+        
+    def get_dashboard_state(self, user_id: str, workspace_id: str) -> Optional[dict]:
+        """Get dashboard state for a user."""
+        return self.dashboard_states.get(workspace_id, {}).get(user_id)
+        
+    def add_synced_pair(self, workspace_id: str, user1_id: str, user2_id: str):
+        """Track that two users have synced dashboards."""
+        self.synced_pairs[workspace_id].add(tuple(sorted([user1_id, user2_id])))
+        
+    def are_dashboards_synced(self, workspace_id: str, user1_id: str, user2_id: str) -> bool:
+        """Check if two users have synced dashboards."""
+        pair = tuple(sorted([user1_id, user2_id]))
+        return pair in self.synced_pairs.get(workspace_id, set())
 
 # Global connection manager instance
 manager = ConnectionManager()

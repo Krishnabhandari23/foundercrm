@@ -14,6 +14,12 @@ class WebSocketMessageType(str, Enum):
     STATE_UPDATE = "state_update"
     STATE_SYNC = "state_sync"
     
+    # Dashboard events
+    DASHBOARD_STATE = "dashboard_state"
+    DASHBOARD_UPDATE = "dashboard_update"
+    DASHBOARD_FILTER = "dashboard_filter"
+    DASHBOARD_SYNC = "dashboard_sync"
+    
     # Resource events
     RESOURCE_CREATED = "resource_created"
     RESOURCE_UPDATED = "resource_updated"
@@ -39,6 +45,23 @@ class StateUpdateMessage(BaseModel):
     data: Dict[str, Any]
     action: str
     workspace_id: str
+
+class DashboardStateMessage(BaseModel):
+    dashboard_type: str
+    user_id: str
+    filters: Dict[str, Any]
+    data: Dict[str, Any]
+    workspace_id: str
+    timestamp: float
+
+class DashboardSyncMessage(BaseModel):
+    source_user_id: str
+    target_user_id: str
+    workspace_id: str
+    dashboard_type: str
+    filters: Dict[str, Any]
+    data: Dict[str, Any]
+    timestamp: float
     
 class UserPresenceMessage(BaseModel):
     user_id: str
