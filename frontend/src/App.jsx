@@ -23,10 +23,7 @@ import AppLayout from './components/layout/AppLayout'
 
 // Context
 import { AuthProvider, useAuth } from './context/AuthContext'
-import { NavigationProvider } from './context/NavigationContext'
-import { LoadingProvider } from './context/LoadingContext'
-import { StateProvider } from './context/StateContext'
-import { DashboardProvider } from './context/DashboardContext'
+import { AppProviders } from './context/Providers'
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -62,12 +59,9 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <NavigationProvider>
-          <LoadingProvider>
-            <StateProvider>
-              <DashboardProvider>
-                <div className="App">
-                  <Toaster position="top-center" />
+        <AppProviders>
+          <div className="App">
+            <Toaster position="top-center" />
                   <Routes>
                     {/* Public Routes */}
                     <Route
@@ -136,11 +130,8 @@ function App() {
                       },
                     }}
                   />
-                </div>
-              </DashboardProvider>
-            </StateProvider>
-          </LoadingProvider>
-        </NavigationProvider>
+          </div>
+        </AppProviders>
       </AuthProvider>
     </BrowserRouter>
   )

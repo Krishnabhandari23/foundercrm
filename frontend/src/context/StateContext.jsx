@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useCallback, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
-import useWebSocket from '../hooks/useWebSocket';
+import { useWebSocket } from '../hooks/useWebSocket';
 
 const StateContext = createContext();
 
@@ -23,7 +23,7 @@ const UPDATE_ACTIONS = {
 export const StateProvider = ({ children }) => {
   const { user, workspace } = useAuth();
   const { sendMessage } = useWebSocket();
-  const [syncState, setSyncState] = React.useState({
+  const [syncState, setSyncState] = useState({
     deals: new Map(),
     tasks: new Map(),
     contacts: new Map(),

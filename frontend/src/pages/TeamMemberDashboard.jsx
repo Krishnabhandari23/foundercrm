@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDashboard } from '../context/DashboardContext'
+import { useDashboard } from '../context/dashboard/DashboardContext'
 import TodaysTasks from '../components/team-dashboard/TodaysTasks'
 import UpcomingDeadlines from '../components/team-dashboard/UpcomingDeadlines'
 import ProgressOverview from '../components/team-dashboard/ProgressOverview'

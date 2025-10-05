@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { useDashboard } from '../context/DashboardContext'
+import { useDashboard } from '../context/dashboard/DashboardContext'
 import { 
   CheckCircle, 
   Clock, 
